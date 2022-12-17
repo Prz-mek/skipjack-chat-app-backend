@@ -59,7 +59,7 @@ async function filterUsers(req: Request, res: Response) {
     : {};
   
   const userContacts = User.findById(user._id).contacts;
-  let users = await User.find(keyword).find({ _id: { $ne: [user._id, ...userContacts] } }).select("username imageUri");
+  let users = await User.find({ _id: { $ne: [user._id, ...userContacts] } }).select("username imageUri");
   users = users.map((user: any) => ({ id: user._id, username: user.username, imageUri: user.imageUri}));
   console.log(users);
   res.send(users);
