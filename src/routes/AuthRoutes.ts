@@ -14,3 +14,4 @@ router.get('/confirmation/:token', asyncHandler(AuthController.confirmEmail));
 router.post('/change-password', protect, asyncHandler(AuthController.changePassword));
 
 export default router;
+
