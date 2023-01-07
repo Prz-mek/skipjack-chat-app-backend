@@ -70,6 +70,8 @@ async function getGroupConversationsShort(req: Request, res: Response, next: Nex
 
   const formatedConversations = await Promise.all(conversations.map(async (c: any) => await formatConversation(c, user)));
 
+  console.log(formatedConversations);
+
   res.status(200).json(formatedConversations);
 }
 

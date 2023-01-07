@@ -40,7 +40,7 @@ router.post("/avatar", protect, uploadAvatar, async (req: any, res: any) => {
     const user = req.user;
     console.log(file);
     if (file) {
-        await User.findOneAndUpdate({_id: user._id}, { imageUri: `${user._id}/avatar.png` });
+        await User.findOneAndUpdate({_id: user._id}, { imageUri: `${user._id}/${file.filename}` });
         return res.json({msg: "Avatar upladed"});
     }
     res.send("Image upload faild")

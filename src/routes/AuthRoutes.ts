@@ -1,17 +1,16 @@
 import express from "express";
 import AuthController from "../controllers/AuthController";
-const { protect } = require("../middleware/AuthMiddleware");
-const asyncHandler = require('express-async-handler')
+import { protect } from "../middleware/AuthMiddleware";
+import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
-router.post('/register', AuthController.register);
+router.post('/register', asyncHandler(AuthController.register));
 
+router.post('/login', asyncHandler(AuthController.login));
 
-router.post('/login', AuthController.login);
+router.get('/confirmation/:token', asyncHandler(AuthController.confirmEmail));
 
-router.get('/confirmation/:token', AuthController.confirmEmail);
+router.post('/change-password', protect, asyncHandler(AuthController.changePassword));
 
-router.post('/change-password', protect, AuthController.changePassword);
-
-module.exports = router;
+export default router;

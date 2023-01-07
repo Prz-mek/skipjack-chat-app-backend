@@ -6,7 +6,6 @@ const User = require("../models/User");
 const protect = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         try {
-            console.log(req.headers.authorization);
             let token = req.headers.authorization.split(" ")[1];
             const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
             req.user = await User.findById(decoded.id).select("-hash");
@@ -21,4 +20,4 @@ const protect = asyncHandler(async(req: Request, res: Response, next: NextFuncti
     }
 });
 
-module.exports = { protect };
+export { protect };

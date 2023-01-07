@@ -34,17 +34,11 @@ export default class AuthController {
     const user = await User.findOne({ email });
   
     if (user && (await bcrypt.compare(password, user.hash))) {
-      console.log({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        accessToken: AuthController.generateAccessToken(user._id, user.username),
-        refreashToken: AuthController.generateRefreshToken(user._id, user.username),
-      });
       res.status(201).json({
         id: user._id,
         username: user.username,
         email: user.email,
+        imageUri: user.imageUri,
         accessToken: AuthController.generateAccessToken(user._id, user.username),
         refreashToken: AuthController.generateRefreshToken(user._id, user.username),
       });

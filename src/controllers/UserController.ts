@@ -43,7 +43,8 @@ async function getContacts(req: Request, res: Response) {
     id: c._id,
     username: c.username,
     imageUri: c.imageUri,
-  }))
+  }));
+  console.log(formatedContacts);
   res.status(200).json(formatedContacts);
 }
 
@@ -58,8 +59,11 @@ async function filterUsers(req: Request, res: Response) {
       }
     : {};
   
-  const userContacts = User.findById(user._id).contacts;
-  let users = await User.find({ _id: { $ne: [user._id, ...userContacts] } }).select("username imageUri");
+  const userContacts = (await User.findById(user._id)).contacts;
+  console.log(userContacts);
+  const excluded = userContacts ? [user._id, ...userContacts] : [user._id];
+  console.log(excluded)
+  let users = await User.find({ _id: { $nin: excluded } }).select("username imageUri");
   users = users.map((user: any) => ({ id: user._id, username: user.username, imageUri: user.imageUri}));
   console.log(users);
   res.send(users);
