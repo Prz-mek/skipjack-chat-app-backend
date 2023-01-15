@@ -23,7 +23,7 @@ app.use(express.static('files'));
 connectToDatabase();
 
 app.use('/api/users', require('./routes/UserRoutes'));
-app.use('/api/conversations', require('./routes/GroupConversationRoutes'));
+app.use('/api/conversations', require('./routes/ConversationRoutes'));
 app.use('/api/messages', require('./routes/MessageRoutes'));
 app.use('/api/auth', require('./routes/AuthRoutes'));
 
@@ -68,10 +68,7 @@ io.use(async (socket: any, next: any) => {
 });
 
 io.on("connection", (socket: any) => {
-    console.log("Connected to server");
     socket.join(socket.userID);
-    
-    // TODO send status to all contacts
 
     socket.on("send-message", async (message: IApiMessage) => {
         try {

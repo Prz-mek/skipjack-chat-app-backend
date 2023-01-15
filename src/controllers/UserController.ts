@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
+import multer from "multer";
+import fs from "fs";
+import path from "path";
 
 const User = require('../models/User');
 
@@ -83,10 +86,40 @@ async function changeUsername(req: Request, res: Response) {
   }
 }
 
+const storage = multer.diskStorage({
+    destination: (req: any, file: any, cb: any) => {
+        const user = req.user;
+        const dirName = `${path.resolve(__dirname, "../..")}/files/${user._id}`;
+        fs.mkdirSync(dirName, { recursive: true });
+        cb(null, dirName);
+    },
+    filename: (req: any, file: any, cb: any) => {
+        const fileName = `avatar${path.extname(file.originalname)}`
+        cb(null, fileName)
+    }
+});
+
+
+const saveAvaterPath = async (req: any, res: any) => {
+    const file: any = req.file;
+    console.log(typeof file)
+    const user = req.user;
+    if (file) {
+        await User.updateAvatar(user._id, `${user._id}/${file.filename}`);
+        return res.json({msg: "Avatar upladed"});
+    }
+    res.send("Image upload faild")
+}
+
+const uploadAvatar = multer({storage}).single("photo");
+
+
 module.exports = {
   addContact,
   getContacts,
   getMe,
   filterUsers,
   changeUsername,
+  uploadAvatar,
+  saveAvaterPath
 }

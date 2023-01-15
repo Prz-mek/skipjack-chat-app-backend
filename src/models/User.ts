@@ -15,6 +15,10 @@ userSchema.statics.findByEmail = function(email: string) {
     return this.where({email: email});
 }
 
+userSchema.statics.updateAvatar = function(id: string, path: string) {
+    return this.findOneAndUpdate({_id: id}, { imageUri: path });
+}
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

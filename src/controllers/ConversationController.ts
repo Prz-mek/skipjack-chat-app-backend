@@ -4,7 +4,9 @@ const GroupConversation = require("../models/GroupConversation");
 const Message = require("../models/Message");
 const User = require("../models/User");
 
-async function getGroupConversations(req: Request, res: Response, next: NextFunction) {
+class ConversationController {
+
+public static async getGroupConversations(req: Request, res: Response, next: NextFunction) {
   const user: any = req.user;
 
   const conversations = await GroupConversation.find({ participants: { $in: [user._id] } });
@@ -12,8 +14,7 @@ async function getGroupConversations(req: Request, res: Response, next: NextFunc
   res.status(200).json(conversations);
 }
 
-// privet
-async function getLatestMessageToConversationsList(latestMessageId: string, userId: string) {
+private static async getLatestMessageToConversationsList(latestMessageId: string, userId: string) {
 
   if (latestMessageId === null || latestMessageId === undefined) {
     return null;
@@ -35,8 +36,8 @@ async function getLatestMessageToConversationsList(latestMessageId: string, user
   return latestMessage;
 }
 
-async function formatConversation(c: any, user: any) {
-  const latestMessage = await getLatestMessageToConversationsList(c.latestMessage, user._id);
+public static async formatConversation(c: any, user: any) {
+  const latestMessage = await ConversationController.getLatestMessageToConversationsList(c.latestMessage, user._id);
 
   let name: string;
   let imageUri: string;
@@ -62,20 +63,20 @@ async function formatConversation(c: any, user: any) {
   return newConv;
 }
 
-async function getGroupConversationsShort(req: Request, res: Response, next: NextFunction) {
+public static async getGroupConversationsShort(req: Request, res: Response, next: NextFunction) {
   const user: any = req.user;
 
   const conversations = await GroupConversation.find({ participants: { $in: [user._id] } })
     .select("_id isGroupConversation name participants latestMessage lastMessageNotReadBy");
 
-  const formatedConversations = await Promise.all(conversations.map(async (c: any) => await formatConversation(c, user)));
+  const formatedConversations = await Promise.all(conversations.map(async (c: any) => await ConversationController.formatConversation(c, user)));
 
   console.log(formatedConversations);
 
   res.status(200).json(formatedConversations);
 }
 
-async function createGroupConversation(req: Request, res: Response, next: NextFunction) {
+public static async createGroupConversation(req: Request, res: Response, next: NextFunction) {
   if (!req.body.participantsIds) {
     res.status(400)
     throw new Error("No participants in converation.");
@@ -90,7 +91,7 @@ async function createGroupConversation(req: Request, res: Response, next: NextFu
   res.status(200).json({ message: "Conversation created" });
 }
 
-async function leaveGroupConversation(req: Request, res: Response, next: NextFunction) {
+public static async leaveGroupConversation(req: Request, res: Response, next: NextFunction) {
   const user: any = req.user;
   const conversation = await GroupConversation.findById(req.params.id);
 
@@ -104,7 +105,7 @@ async function leaveGroupConversation(req: Request, res: Response, next: NextFun
   res.status(200).json({ message: `You leave conversation with id: ${req.params.id} has been deleted` })
 }
 
-const accessPrivateChat = async (req: Request, res: Response, next: NextFunction) => {
+public static async accessPrivateConversation(req: Request, res: Response, next: NextFunction) {
   const { userId } = req.body;
   const user: any = req.user;
 
@@ -113,7 +114,7 @@ const accessPrivateChat = async (req: Request, res: Response, next: NextFunction
     return res.sendStatus(400);
   }
 
-  let isChat = await GroupConversation.findOne({
+  let conversation= await GroupConversation.findOne({
     isGroupConversation: false,
     $and: [
       { participants: { $elemMatch: { $eq: user._id } } },
@@ -121,8 +122,8 @@ const accessPrivateChat = async (req: Request, res: Response, next: NextFunction
     ],
   });
 
-  if (isChat) {
-    const formatedConversation = await formatConversation(isChat, user);
+  if (conversation) {
+    const formatedConversation = await ConversationController.formatConversation(conversation, user);
     res.send(formatedConversation);
   } else {
     let conversationData = {
@@ -132,7 +133,7 @@ const accessPrivateChat = async (req: Request, res: Response, next: NextFunction
 
     try {
       const createdConversation = await GroupConversation.create(conversationData);
-      const formatedConversation = await formatConversation(await GroupConversation.findOne({ _id: createdConversation._id }), user);
+      const formatedConversation = await ConversationController.formatConversation(await GroupConversation.findOne({ _id: createdConversation._id }), user);
       console.log(formatedConversation)
       res.status(200).json(formatedConversation);
     } catch (error: any) {
@@ -142,11 +143,6 @@ const accessPrivateChat = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-
-module.exports = {
-  getGroupConversations,
-  getGroupConversationsShort,
-  createGroupConversation,
-  leaveGroupConversation,
-  accessPrivateChat,
 }
+
+export default ConversationController;
