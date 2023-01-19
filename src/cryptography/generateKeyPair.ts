@@ -1,6 +1,10 @@
 import crypto from "crypto";
 import fs from "fs";
 
+/**
+ * Attribution: https://github.com/zachgoll/express-jwt-authentication-starter
+ */
+
 function generateKeyPair() {
     const keyPair = crypto.generateKeyPairSync("rsa", {
         modulusLength: 4096,
