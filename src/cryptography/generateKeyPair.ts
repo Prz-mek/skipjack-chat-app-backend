@@ -2,7 +2,8 @@ import crypto from "crypto";
 import fs from "fs";
 
 /**
- * Attribution: https://github.com/zachgoll/express-jwt-authentication-starter
+ * Attribution
+ * See: https://github.com/zachgoll/express-jwt-authentication-starter
  */
 
 function generateKeyPair() {

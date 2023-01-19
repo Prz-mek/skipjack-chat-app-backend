@@ -92,7 +92,6 @@ io.on("connection", (socket: any) => {
                 io.in(room).emit("receive-message", { conversationId: message.conversation, message: formatedMessage });
             });
 
-            // TODO add not read message
             await GroupConversation.updateOne({ _id: message.conversation }, { $set: { latestMessage: messageDb._id, lastMessageNotReadBy: notSeenBy }  });
         } catch (err) {
             console.log(err);

@@ -53,14 +53,6 @@ async function getContacts(req: Request, res: Response) {
 
 async function filterUsers(req: Request, res: Response) {
   const user: any = req.user;
-  const keyword = req.body.quary
-    ? {
-        $or: [
-          { username: { $regex: req.body.search, $options: "i" } },
-          { email: { $regex: req.body.search, $options: "i" } },
-        ],
-      }
-    : {};
   
   const userContacts = (await User.findById(user._id)).contacts;
   console.log(userContacts);

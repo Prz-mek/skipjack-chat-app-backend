@@ -39,28 +39,6 @@ async function formatMessageToMessageList(message: any, userId: string) {
     }
 }
 
-async function createMessage(req: Request, res: Response, next: NextFunction) {
-    const user: any = req.user;
-
-    if (!req.body.conversationId) {
-        res.status(400)
-        throw new Error("No conversationId in message");
-    }
-
-    if (!req.body.text) {
-        res.status(400)
-        throw new Error("No text in message");
-    }
-    
-    const message = await Message.create({
-        sender: user.id,
-        conversation: req.body.conversationId,
-        text: req.body.text,
-    });
-
-    res.status(200).json({message: "Message send"});
-}
-
 async function updateMessage(req: Request, res: Response, next: NextFunction) {
     const message = await Message.findById(req.params.id);
     const user: any = req.user;
@@ -102,7 +80,6 @@ async function deleteMessage(req: Request, res: Response, next: NextFunction) {
 
 module.exports = {
     getMessages,
-    createMessage,
     updateMessage,
     deleteMessage,
     formatMessageToMessageList,

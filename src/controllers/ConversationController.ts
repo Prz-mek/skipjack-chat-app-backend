@@ -110,11 +110,10 @@ public static async accessPrivateConversation(req: Request, res: Response, next:
   const user: any = req.user;
 
   if (!userId) {
-    console.log("UserId param not sent with request");
-    return res.sendStatus(400);
+    throw new Error("There is no userId.");
   }
 
-  let conversation= await GroupConversation.findOne({
+  let conversation = await GroupConversation.findOne({
     isGroupConversation: false,
     $and: [
       { participants: { $elemMatch: { $eq: user._id } } },
@@ -134,7 +133,6 @@ public static async accessPrivateConversation(req: Request, res: Response, next:
     try {
       const createdConversation = await GroupConversation.create(conversationData);
       const formatedConversation = await ConversationController.formatConversation(await GroupConversation.findOne({ _id: createdConversation._id }), user);
-      console.log(formatedConversation)
       res.status(200).json(formatedConversation);
     } catch (error: any) {
       res.status(400);
