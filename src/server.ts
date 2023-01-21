@@ -34,7 +34,6 @@ app.use(errorHandler);
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // socket.io
-
 const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
