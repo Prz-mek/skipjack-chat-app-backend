@@ -39,6 +39,7 @@ export default class AuthController {
         username: user.username,
         email: user.email,
         imageUri: user.imageUri,
+        isConfirmed: user.confirmed,
         accessToken: AuthController.generateAccessToken(user._id, user.username),
         refreashToken: AuthController.generateRefreshToken(user._id, user.username),
       });
