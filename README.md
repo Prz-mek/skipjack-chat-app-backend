@@ -1,6 +1,10 @@
 # skipjack-chat-app-backend
 ---
 
+For project descryption see [frontend repository](https://github.com/Prz-mek/skipjack-chat-app-mobile).
+
+---
+
 ## Code in this repository is based on following courses and examples:
 
 * [Private messaging](https://socket.io/get-started/private-messaging-part-1/)
